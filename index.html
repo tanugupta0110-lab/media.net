@@ -13,13 +13,33 @@
             font-family: 'Inter', sans-serif;
             background-color: #f7f9fb;
         }
+        /* Steps are separate content views within the single page */
         .step-container {
             display: none;
+            /* Added min-height to reduce CLS when content loads/changes */
+            min-height: 400px; 
         }
         .ad-preview-box {
             min-height: 120px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
             border-radius: 0.5rem;
+        }
+        /* Custom styling for range input */
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb; /* blue-600 */
+            cursor: pointer;
+            margin-top: -8px; /* Offset the thumb */
+        }
+        input[type=range]::-moz-range-thumb {
+            height: 20px;
+            width: 20px;
+            border-radius: 50%;
+            background: #2563eb; /* blue-600 */
+            cursor: pointer;
         }
     </style>
 </head>
@@ -74,6 +94,7 @@
                 
                 <div class="space-y-4">
                     <label for="goal-select" class="block text-sm font-medium text-gray-700">What is your primary goal?</label>
+                    <!-- Goal select event handled in JS to re-render playbooks -->
                     <select id="goal-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                         <option value="walkins">🚶 Drive Walk-ins (Footfall)</option>
                         <option value="whatsapp">💬 Generate WhatsApp Orders/Chats</option>
@@ -146,6 +167,7 @@
                 
                 <div class="space-y-2">
                     <label for="budget-slider" class="block text-sm font-medium text-gray-700">Daily Budget: <span id="budget-value" class="font-bold text-lg text-blue-600">₹5,000</span></label>
+                    <!-- Slider interaction handled in JS -->
                     <input type="range" id="budget-slider" min="2000" max="25000" step="1000" value="5000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                 </div>
 
@@ -238,9 +260,9 @@
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
 
+        // Corrected Firebase Imports: Removed 'setLogLevel' which caused the SyntaxError.
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // NOTE: setLogLevel is not exported from firebase-auth.js, removing to fix SyntaxError.
         
         let app, auth;
         
@@ -248,7 +270,6 @@
             if (Object.keys(firebaseConfig).length > 0) {
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
-                // setLogLevel('Debug'); // Removing problematic call
             
                 const signInPromise = typeof __initial_auth_token !== 'undefined' 
                     ? signInWithCustomToken(auth, __initial_auth_token)
@@ -289,7 +310,7 @@
             { id: 'event-booster', name: 'Event Booster', icon: '🎫', 
               description: 'Promote an exclusive event or new collection launch with RSVP tracking.',
               copy_en: 'New Collection Preview: RSVP now for 10% off. {locality} store.',
-              copy_hi: 'Naya Collection. RSVP karke 10% discount paayein. {locality} store.',
+              copy_hi: 'Naya Collection Preview: RSVP karke 10% discount paayein. {locality} store.',
               keywords: ['event', 'luxury', 'festival', 'rsvp'], score_mod: 1.5, min_budget: 4000
             },
             { id: 'festival-sale', name: 'Festival Sale', icon: '🪔', 
@@ -302,13 +323,13 @@
               description: 'Auto-schedules ads to push delivery/calls when rain is forecast.',
               copy_en: 'Rain outside? We deliver! Free shipping on all orders over ₹999.',
               copy_hi: 'Baarish aa rahi hai. Ghar baithe order karein. Free delivery!',
-              keywords: ['weather', 'footins', 'whatsapp'], score_mod: 1.2, min_budget: 2000
+              keywords: ['weather', 'walkins', 'whatsapp'], score_mod: 1.2, min_budget: 2000
             },
             { id: 'clearance', name: 'Clearance Sale', icon: '💥', 
               description: 'Move older stock quickly with aggressive discounting for footfall.',
               copy_en: 'FINAL SALE: {discount}% off all last season stock. Visit now!',
               copy_hi: 'Aakhri sale! Pichle season ke stock par bhaari chhoot. Turant aayein!',
-              keywords: ['clearance', 'footins', 'sports'], score_mod: 1.1, min_budget: 2000
+              keywords: ['clearance', 'walkins', 'sports'], score_mod: 1.1, min_budget: 2000
             },
         ];
 
@@ -318,7 +339,7 @@
             for (let i = 1; i <= 5; i++) {
                 const indicator = document.getElementById(`step-${i}-indicator`);
                 if (indicator) {
-                    indicator.classList.remove('text-blue-600', 'text-gray-400', 'font-bold', 'text-green-500');
+                    indicator.classList.remove('text-blue-600', 'text-gray-400', 'font-bold', 'text-green-500', 'font-medium');
                     if (i === currentStep) {
                         indicator.classList.add('text-blue-600', 'font-bold');
                     } else if (i < currentStep) {
@@ -346,7 +367,7 @@
             }
         }
 
-        function nextStep() {
+        window.nextStep = function() {
             if (campaignConfig.step === 1) {
                 if (!campaignConfig.personaId) return;
                 showStep(2);
@@ -361,7 +382,7 @@
             } 
         }
 
-        function prevStep() {
+        window.prevStep = function() {
             if (campaignConfig.step > 1) {
                 showStep(campaignConfig.step - 1);
             }
@@ -401,35 +422,37 @@
 
         // --- STEP 2 LOGIC ---
 
-        function calculatePlaybookScore(playbook, personaId) {
+        function calculatePlaybookScore(playbook, personaId, currentGoal) {
             let score = 100;
             const persona = PERSONAS[personaId];
             
             // Adjust score based on persona type affinity
             if (personaId === 'jewelry') {
                 if (playbook.keywords.includes('luxury') || playbook.keywords.includes('festival')) score *= 1.5;
-                if (playbook.keywords.includes('footins') || playbook.keywords.includes('clearance')) score *= 0.8;
+                if (playbook.keywords.includes('walkins') || playbook.keywords.includes('clearance')) score *= 0.8;
             } else if (personaId === 'sports') {
-                if (playbook.keywords.includes('sports') || playbook.keywords.includes('clearance')) score *= 1.5;
+                if (playbook.keywords.includes('sports') || playbook.keywords.includes('clearance') || playbook.keywords.includes('walkins')) score *= 1.5;
                 if (playbook.keywords.includes('luxury') || playbook.keywords.includes('festival')) score *= 0.8;
             }
 
-            // Adjust score based on Goal affinity (using the default 'walkins' for initial render)
-            const goal = document.getElementById('goal-select').value;
-            if (goal === 'event' && playbook.keywords.includes('rsvp')) score *= 2;
-            if (goal === 'whatsapp' && playbook.keywords.includes('whatsapp')) score *= 1.5;
-            if (goal === 'walkins' && playbook.keywords.includes('footins')) score *= 1.5;
+            // Adjust score based on Goal affinity
+            if (currentGoal === 'event' && playbook.keywords.includes('rsvp')) score *= 2;
+            if (currentGoal === 'whatsapp' && playbook.keywords.includes('whatsapp')) score *= 1.5;
+            if (currentGoal === 'walkins' && playbook.keywords.includes('walkins')) score *= 1.5;
+            if (currentGoal === 'calls' && (playbook.keywords.includes('whatsapp') || playbook.keywords.includes('walkins'))) score *= 1.2;
 
             return Math.floor(score * playbook.score_mod);
         }
 
         function renderStep2() {
+            const goalSelect = document.getElementById('goal-select');
+            campaignConfig.goal = goalSelect.value; // Update config with current selection
             document.getElementById('persona-name-step2').textContent = campaignConfig.persona.name;
             
-            // Re-calculate scores and sort
+            // Re-calculate scores and sort based on the current goal
             const rankedPlaybooks = PLAYBOOKS.map(pb => ({
                 ...pb,
-                score: calculatePlaybookScore(pb, campaignConfig.personaId)
+                score: calculatePlaybookScore(pb, campaignConfig.personaId, campaignConfig.goal)
             })).sort((a, b) => b.score - a.score);
 
             const playbookList = document.getElementById('playbook-list');
@@ -446,6 +469,7 @@
                 `;
             }).join('');
 
+            // 1. Attach event listeners for playbook selection
             document.querySelectorAll('.playbook-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.playbook-btn').forEach(b => {
@@ -455,18 +479,25 @@
                     campaignConfig.selectedPlaybookId = this.getAttribute('data-id');
                     document.getElementById('step-2-next').disabled = false;
                     
-                    // Set min budget for slider later
+                    // Set min budget for slider later (optional, but good for guardrails)
                     const minBudget = parseInt(this.getAttribute('data-min-budget'));
                     campaignConfig.budget = Math.max(campaignConfig.budget, minBudget);
                 });
             });
             
-            // Re-render and auto-select based on the new goal selection
-            document.getElementById('goal-select').addEventListener('change', renderStep2);
+            // 2. Attach event listener for Goal change (makes the list interactive)
+            // Ensure we remove any old listener before re-attaching to prevent multiple calls
+            goalSelect.removeEventListener('change', renderStep2); 
+            goalSelect.addEventListener('change', renderStep2);
 
-            // Auto-select the top-ranked playbook
-            if (rankedPlaybooks.length > 0) {
-                 document.querySelector(`.playbook-btn[data-id="${rankedPlaybooks[0].id}"]`).click();
+            // 3. Auto-select the top-ranked playbook if one hasn't been selected yet
+            if (campaignConfig.selectedPlaybookId === null || !document.querySelector(`.playbook-btn[data-id="${campaignConfig.selectedPlaybookId}"]`)) {
+                 if (rankedPlaybooks.length > 0) {
+                     document.querySelector(`.playbook-btn[data-id="${rankedPlaybooks[0].id}"]`).click();
+                 }
+            } else {
+                // If a playbook was previously selected, ensure it's still highlighted
+                document.querySelector(`.playbook-btn[data-id="${campaignConfig.selectedPlaybookId}"]`).click();
             }
         }
         
@@ -493,6 +524,36 @@
             return copy;
         }
 
+        function updateCreativeContent() {
+             const playbook = PLAYBOOKS.find(p => p.id === campaignConfig.selectedPlaybookId);
+             if (!playbook) return;
+             
+             const persona = campaignConfig.persona;
+             const lang = document.getElementById('language-toggle').value;
+             const copyText = generateCopy(lang, playbook, persona);
+             
+             document.getElementById('ad-copy').value = copyText;
+             campaignConfig.adCopy = copyText;
+
+             // Simple Preview Update - Split by ':' for a clean headline/description mock
+             const parts = copyText.split(':');
+             document.getElementById('preview-headline').textContent = parts[0].trim().substring(0, 40) || 'Creative Headline';
+             document.getElementById('preview-description').textContent = (parts.length > 1 ? parts[1].trim() : copyText.trim()).substring(0, 80) || 'Creative Description';
+             
+             // Auto-set CTA based on goal
+             const ctaSelect = document.getElementById('call-to-action');
+             if (campaignConfig.goal === 'event') {
+                 ctaSelect.value = 'RSVP Now';
+             } else if (campaignConfig.goal === 'whatsapp') {
+                 ctaSelect.value = 'Order on WhatsApp';
+             } else if (campaignConfig.goal === 'calls') {
+                 ctaSelect.value = 'Call Now';
+             } else {
+                 ctaSelect.value = 'Visit Store';
+             }
+             campaignConfig.cta = ctaSelect.value;
+        }
+
         function renderStep3() {
             const playbook = PLAYBOOKS.find(p => p.id === campaignConfig.selectedPlaybookId);
             const persona = campaignConfig.persona;
@@ -502,26 +563,20 @@
                 <p>Targets: ${persona.locality} radius, Auto-picks interests: ${playbook.keywords.join(', ')}</p>
             `;
 
-            // Initial Copy Generation & Render
-            const updateCreative = () => {
-                const lang = document.getElementById('language-toggle').value;
-                const copyText = generateCopy(lang, playbook, persona);
-                
-                document.getElementById('ad-copy').value = copyText;
-                campaignConfig.adCopy = copyText;
-
-                // Simple Preview Update
-                const parts = copyText.split(':');
-                document.getElementById('preview-headline').textContent = parts[0].trim().substring(0, 40) || 'Creative Headline';
-                document.getElementById('preview-description').textContent = (parts.length > 1 ? parts[1].trim() : copyText.trim()).substring(0, 80) || 'Creative Description';
-                
-                document.getElementById('call-to-action').value = campaignConfig.goal === 'event' ? 'RSVP Now' : 'Visit Store';
-            };
-
-            document.getElementById('language-toggle').addEventListener('change', updateCreative);
-            document.getElementById('ad-copy').addEventListener('input', updateCreative);
+            // Bind events for language toggle and manual copy input
+            document.getElementById('language-toggle').removeEventListener('change', updateCreativeContent);
+            document.getElementById('language-toggle').addEventListener('change', updateCreativeContent);
             
-            updateCreative(); // Initial render
+            document.getElementById('ad-copy').removeEventListener('input', updateCreativeContent);
+            // Only update the preview/config on copy change, don't regenerate the text
+            document.getElementById('ad-copy').addEventListener('input', function() {
+                campaignConfig.adCopy = this.value;
+                const parts = this.value.split(':');
+                document.getElementById('preview-headline').textContent = parts[0].trim().substring(0, 40);
+                document.getElementById('preview-description').textContent = (parts.length > 1 ? parts[1].trim() : this.value.trim()).substring(0, 80);
+            });
+            
+            updateCreativeContent(); // Initial render
         }
 
         // --- STEP 4 LOGIC ---
@@ -565,12 +620,22 @@
                 document.getElementById('sim-info').textContent = outcome.sim_text;
             };
             
+            // Remove/re-add listener for cleanliness
+            budgetSlider.removeEventListener('input', updateSimulator);
             budgetSlider.addEventListener('input', updateSimulator);
             
-            // Ensure slider starts at current budget or min if needed
+            // Set slider minimum based on the selected playbook
             const currentPlaybook = PLAYBOOKS.find(p => p.id === campaignConfig.selectedPlaybookId);
-            budgetSlider.min = currentPlaybook.min_budget;
-            budgetSlider.value = Math.max(budgetSlider.value, currentPlaybook.min_budget);
+            const minBudget = currentPlaybook ? currentPlaybook.min_budget : 2000;
+            
+            budgetSlider.min = minBudget;
+            
+            // If the current config budget is below the playbook minimum, increase it
+            if (campaignConfig.budget < minBudget) {
+                 campaignConfig.budget = minBudget;
+            }
+            budgetSlider.value = campaignConfig.budget;
+
 
             updateSimulator(); // Initial simulator render
         }
@@ -583,26 +648,17 @@
             document.getElementById('published-playbook').textContent = playbook.name;
         }
 
+        window.publishCampaign = function() {
+             // Transition to the final step
+             showStep(5);
+        }
+
         // --- APP INITIALIZATION ---
 
         window.onload = () => {
             initStep1();
             showStep(1);
         };
-
-        function publishCampaign() {
-             // Mock publish confirmation
-             const isCpaStopOn = document.getElementById('cpa-stop').checked;
-             const isExpiryOn = document.getElementById('auto-expiry').checked;
-
-             const message = `
-                 Publishing "${campaignConfig.persona.name}: ${PLAYBOOKS.find(p => p.id === campaignConfig.selectedPlaybookId).name}"
-                 Budget: ₹${campaignConfig.budget.toLocaleString()}
-                 Guardrails: CPA Stop (${isCpaStopOn ? 'ON' : 'OFF'}), Auto-Expiry (${isExpiryOn ? 'ON' : 'OFF'})
-             `;
-             console.log(message);
-             showStep(5);
-        }
     </script>
 </body>
 </html>
