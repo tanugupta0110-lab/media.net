@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Weather-Smart Campaign Builder (MVP Prototype)</title>
+    <title>SMB Smart Campaign Wizard</title>
     <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Use Inter font -->
@@ -17,9 +17,9 @@
             display: none;
         }
         .ad-preview-box {
-            min-height: 150px;
+            min-height: 120px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.06);
             border-radius: 0.5rem;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -28,152 +28,160 @@
         
         <!-- Header -->
         <header class="p-5 border-b border-gray-100 bg-white">
-            <h1 class="text-2xl font-bold text-gray-800">Smart Campaign Auto-Pilot  pilot</h1>
-            <p class="text-sm text-gray-500 mt-1">Prototype: Auto-pilot ads that turn live weather into sales.</p>
+            <h1 class="text-xl font-bold text-gray-800">SMB Campaign Auto-Pilot</h1>
+            <p class="text-sm text-gray-500 mt-1">Outcome-first ad wizard for local businesses.</p>
         </header>
 
         <!-- Main Content Area - Step Containers -->
         <div class="p-6 space-y-6">
 
             <!-- Step Indicator -->
-            <div class="flex justify-between items-center text-sm font-medium text-center">
-                <span id="step-1-indicator" class="text-blue-600">1. Goal & Locality</span>
-                <span id="step-2-indicator" class="text-gray-400">2. Templates</span>
-                <span id="step-3-indicator" class="text-gray-400">3. Creative</span>
-                <span id="step-4-indicator" class="text-gray-400">4. Triggers & Budget</span>
-                <span id="step-5-indicator" class="text-gray-400">5. Publish</span>
+            <div class="flex justify-between items-center text-xs font-medium text-center pb-2 border-b border-gray-100">
+                <span id="step-1-indicator" class="text-blue-600">1. Persona</span>
+                <span id="step-2-indicator" class="text-gray-400">2. Goal & Playbook</span>
+                <span id="step-3-indicator" class="text-gray-400">3. Creative Studio</span>
+                <span id="step-4-indicator" class="text-gray-400">4. Budget & Guardrails</span>
+                <span id="step-5-indicator" class="text-gray-400">5. Dashboard</span>
             </div>
             
-            <!-- STEP 1: Goal & Locality -->
+            <!-- STEP 1: Persona Selection -->
             <div id="step-1" class="step-container space-y-6 block">
-                <h2 class="text-xl font-semibold text-gray-700">What do you want today?</h2>
+                <h2 class="text-xl font-semibold text-gray-700">1. Tell us about your business.</h2>
+                <div id="persona-summary" class="p-4 bg-yellow-50 text-yellow-800 rounded-lg text-sm hidden">
+                    <p class="font-bold">Business Loaded:</p>
+                    <p id="persona-details"></p>
+                </div>
                 
                 <div class="space-y-4">
-                    <button data-goal="walkins" class="goal-btn w-full p-4 bg-white border border-gray-200 rounded-lg text-left hover:bg-blue-50 transition duration-150">
-                        <p class="font-semibold text-gray-800">🛍️ Drive Walk-ins</p>
-                        <p class="text-sm text-gray-500">Increase footfall when weather is favorable (e.g., sunny Saturday).</p>
+                    <button data-persona="sports" class="persona-btn w-full p-4 bg-white border border-gray-200 rounded-lg text-left hover:bg-blue-50 transition duration-150">
+                        <p class="font-semibold text-gray-800">👟 Sports Apparel / Gear</p>
+                        <p class="text-sm text-gray-500">Footwear, outdoor gear, fitness services. (Focus: Walk-ins, Clearance).</p>
                     </button>
-                    <button data-goal="delivery" class="goal-btn w-full p-4 bg-white border border-gray-200 rounded-lg text-left hover:bg-blue-50 transition duration-150">
-                        <p class="font-semibold text-gray-800">🛵 Defensive Promos / Delivery</p>
-                        <p class="text-sm text-gray-500">Steer customers to delivery/WhatsApp during bad weather (e.g., heavy rain).</p>
+                    <button data-persona="jewelry" class="persona-btn w-full p-4 bg-white border border-gray-200 rounded-lg text-left hover:bg-blue-50 transition duration-150">
+                        <p class="font-semibold text-gray-800">💎 Jewelry / Luxury Retail</p>
+                        <p class="text-sm text-gray-500">High-value goods, focus on festivals and events. (Focus: Event RSVP, Calls).</p>
                     </button>
-                    <button data-goal="stock" class="goal-btn w-full p-4 bg-white border border-gray-200 rounded-lg text-left hover:bg-blue-50 transition duration-150">
-                        <p class="font-semibold text-gray-800">📦 Move Perishable Stock</p>
-                        <p class="text-sm text-gray-500">Flash sales when rain/heat hits to clear stock (e.g., dairy, produce).</p>
-                    </button>
-                </div>
-
-                <div class="space-y-2">
-                    <label for="pincode" class="block text-sm font-medium text-gray-700">Service Locality (Pincode)</label>
-                    <input type="text" id="pincode" value="500081" placeholder="Enter Pincode (e.g., 500081)" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
-                    <p class="text-xs text-gray-400">Ads will target a 3km radius around this pincode.</p>
                 </div>
                 
                 <button onclick="nextStep()" id="step-1-next" class="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-150 disabled:bg-blue-300" disabled>
-                    Next: Check Weather Signals
+                    Next: Pick Goal & Playbook
                 </button>
             </div>
 
-            <!-- STEP 2: Weather-Smart Templates -->
+            <!-- STEP 2: Goal & Playbook -->
             <div id="step-2" class="step-container space-y-6">
-                <h2 class="text-xl font-semibold text-gray-700">2. Select a Weather-Smart Template</h2>
+                <h2 class="text-xl font-semibold text-gray-700">2. Goal & Campaign Playbook</h2>
                 
-                <div id="current-weather" class="p-4 bg-gray-100 rounded-lg border border-gray-200 text-gray-700">
-                    <!-- Weather data will be populated here -->
-                    <p class="font-bold text-lg">Loading Weather...</p>
+                <div class="space-y-4">
+                    <label for="goal-select" class="block text-sm font-medium text-gray-700">What is your primary goal?</label>
+                    <select id="goal-select" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
+                        <option value="walkins">🚶 Drive Walk-ins (Footfall)</option>
+                        <option value="whatsapp">💬 Generate WhatsApp Orders/Chats</option>
+                        <option value="calls">📞 Get More Calls</option>
+                        <option value="event">🎫 Promote an Event / RSVP</option>
+                    </select>
                 </div>
 
-                <p class="text-sm text-gray-600 font-semibold">Templates ranked for the next 48 hours forecast:</p>
+                <p class="text-sm text-gray-600 font-semibold">Recommended Playbooks for <span id="persona-name-step2" class="text-blue-600"></span>:</p>
                 
-                <div id="template-list" class="space-y-3">
-                    <!-- Templates will be populated here -->
+                <div id="playbook-list" class="space-y-3">
+                    <!-- Playbooks will be populated here -->
                 </div>
 
                 <div class="flex space-x-3">
                     <button onclick="prevStep()" class="flex-1 bg-gray-200 text-gray-700 p-3 rounded-lg font-semibold hover:bg-gray-300 transition duration-150">Back</button>
                     <button onclick="nextStep()" id="step-2-next" class="flex-1 bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-150" disabled>
-                        Next: Customize Offer
+                        Next: Creative Studio
                     </button>
                 </div>
             </div>
 
-            <!-- STEP 3: Creative & Offer -->
+            <!-- STEP 3: Creative Studio Lite -->
             <div id="step-3" class="step-container space-y-6">
-                <h2 class="text-xl font-semibold text-gray-700">3. Creative & Offer Customization</h2>
+                <h2 class="text-xl font-semibold text-gray-700">3. Creative Studio Lite</h2>
                 
-                <div id="selected-template-info" class="p-4 bg-yellow-50 text-yellow-800 rounded-lg text-sm">
-                    <!-- Template trigger info here -->
+                <div id="creative-info" class="p-3 bg-indigo-50 text-indigo-800 rounded-lg text-sm">
+                    <!-- Playbook info here -->
                 </div>
 
                 <div class="space-y-4">
-                    <label for="ad-copy" class="block text-sm font-medium text-gray-700">Ad Headline / Offer Copy (Dynamic Tokens: {temp}, {condition})</label>
+                    <label for="ad-copy" class="block text-sm font-medium text-gray-700">Ad Copy (Autofilled, Quick Edit)</label>
                     <textarea id="ad-copy" rows="3" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 font-medium" maxlength="120"></textarea>
                     
+                    <div class="flex justify-between items-center">
+                        <label for="language-toggle" class="block text-sm font-medium text-gray-700">Language Toggle:</label>
+                        <select id="language-toggle" class="p-2 border border-gray-300 rounded-lg text-sm">
+                            <option value="en">English</option>
+                            <option value="hi">Hinglish</option>
+                        </select>
+                    </div>
+
                     <label for="call-to-action" class="block text-sm font-medium text-gray-700">Call to Action (CTA)</label>
                     <select id="call-to-action" class="w-full p-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500">
                         <option value="Call Now">📞 Call Now</option>
                         <option value="Order on WhatsApp">💬 Order on WhatsApp</option>
                         <option value="Visit Store">🚶 Visit Store</option>
-                        <option value="Shop Now">🛒 Shop Now</option>
+                        <option value="RSVP Now">🎫 RSVP Now</option>
                     </select>
                 </div>
 
-                <h3 class="text-lg font-semibold text-gray-700">Live Preview (Google Search Ad)</h3>
+                <h3 class="text-lg font-semibold text-gray-700">Multi-Channel Preview</h3>
                 <div id="ad-preview" class="ad-preview-box p-3 bg-white border border-gray-300">
-                    <p class="text-sm text-blue-800 font-medium">Ad · <span id="preview-url">mycafe.com/deal</span></p>
-                    <p id="preview-headline" class="text-base text-blue-600 font-bold mt-1 leading-tight">Rain incoming ☔ Flash 20% on raincoats today.</p>
-                    <p id="preview-description" class="text-sm text-gray-700 mt-1">Stay dry, we deliver. Free umbrella with orders above ₹499.</p>
+                    <p class="text-sm text-gray-500">Google Search Preview</p>
+                    <p id="preview-headline" class="text-base text-blue-600 font-bold mt-1 leading-tight"></p>
+                    <p id="preview-description" class="text-sm text-gray-700 mt-1"></p>
                 </div>
                 
                 <div class="flex space-x-3">
                     <button onclick="prevStep()" class="flex-1 bg-gray-200 text-gray-700 p-3 rounded-lg font-semibold hover:bg-gray-300 transition duration-150">Back</button>
                     <button onclick="nextStep()" class="flex-1 bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-150">
-                        Next: Set Budget & Triggers
+                        Next: Set Budget & Guardrails
                     </button>
                 </div>
             </div>
 
-            <!-- STEP 4: Triggers & Budget -->
+            <!-- STEP 4: Budget & Guardrails -->
             <div id="step-4" class="step-container space-y-6">
-                <h2 class="text-xl font-semibold text-gray-700">4. Triggers & Budget</h2>
+                <h2 class="text-xl font-semibold text-gray-700">4. Budget & Guardrails</h2>
                 
-                <div class="p-4 bg-blue-50 text-blue-800 rounded-lg text-sm font-medium">
-                    <p class="font-bold">Weather Forecast:</p>
-                    <p id="forecast-summary"></p>
+                <div class="space-y-2">
+                    <label for="budget-slider" class="block text-sm font-medium text-gray-700">Daily Budget: <span id="budget-value" class="font-bold text-lg text-blue-600">₹5,000</span></label>
+                    <input type="range" id="budget-slider" min="2000" max="25000" step="1000" value="5000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
                 </div>
 
-                <div class="space-y-4">
-                    <p class="text-sm font-medium text-gray-700">Weather $\rightarrow$ Ad Logic (Editable Presets)</p>
-                    
-                    <div id="trigger-list" class="space-y-2">
-                        <!-- Trigger rules will be populated here -->
+                <h3 class="text-lg font-semibold text-gray-700 mt-6">Budget Confidence Simulator</h3>
+                <div id="outcome-simulator" class="p-4 bg-green-50 rounded-lg border border-green-200">
+                    <p class="text-sm text-gray-600">Expected Outcome for <span id="business-name-sim"></span>:</p>
+                    <p class="text-3xl font-bold text-green-700 mt-2">
+                        <span id="predicted-actions">~110</span> Actions
+                    </p>
+                    <p class="text-sm text-green-700 mt-1 font-medium">
+                         (Est. CPA: ₹<span id="predicted-cpa">45</span> | <span id="sim-info">Higher volume, lower value actions.</span>)
+                    </p>
+                </div>
+
+                <h3 class="text-lg font-semibold text-gray-700 mt-6">Safety Guardrails</h3>
+                <div class="space-y-3">
+                    <div class="flex items-start p-3 bg-white rounded-lg border border-gray-200">
+                        <input type="checkbox" id="cpa-stop" class="mt-1 h-4 w-4 text-red-600 border-gray-300 rounded focus:ring-red-500" checked>
+                        <div class="ml-3 text-sm">
+                            <label for="cpa-stop" class="font-medium text-gray-700">Auto-Pause on High CPA</label>
+                            <p class="text-gray-500">Stop campaign if Cost-per-Action exceeds ₹<span id="cpa-limit">100</span> (2x estimate).</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start p-3 bg-white rounded-lg border border-gray-200">
+                        <input type="checkbox" id="auto-expiry" class="mt-1 h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500" checked>
+                        <div class="ml-3 text-sm">
+                            <label for="auto-expiry" class="font-medium text-gray-700">Auto-Expiry</label>
+                            <p class="text-gray-500">Automatically stop campaign after 7 days (recommended for quick sales).</p>
+                        </div>
                     </div>
                 </div>
 
-                <div class="space-y-2 pt-4 border-t border-gray-200">
-                    <label for="budget-slider" class="block text-sm font-medium text-gray-700">Daily Budget: <span id="budget-value" class="font-bold text-lg text-blue-600">₹5,000</span></label>
-                    <input type="range" id="budget-slider" min="2000" max="20000" step="1000" value="5000" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                </div>
-
-                <h3 class="text-lg font-semibold text-gray-700 mt-6">Budget-to-Outcome Simulator</h3>
-                <div id="outcome-simulator" class="p-4 bg-green-50 rounded-lg border border-green-200">
-                    <p class="text-sm text-gray-600">Based on your settings and the 48h forecast:</p>
-                    <p class="text-2xl font-bold text-green-700 mt-2">
-                        <span id="predicted-walkins">~75</span> Walk-ins / Orders
-                    </p>
-                    <p class="text-xs text-green-700 mt-1 font-medium">
-                        (Projected 
-                        <span id="weather-uplift" class="inline-flex items-center">
-                            +22% Weather Uplift
-                        </span> 
-                        vs. generic campaigns)
-                    </p>
-                </div>
-
-                <div class="flex space-x-3">
+                <div class="flex space-x-3 mt-6">
                     <button onclick="prevStep()" class="flex-1 bg-gray-200 text-gray-700 p-3 rounded-lg font-semibold hover:bg-gray-300 transition duration-150">Back</button>
                     <button onclick="publishCampaign()" class="flex-1 bg-green-600 text-white p-3 rounded-lg font-semibold hover:bg-green-700 transition duration-150">
-                        Publish Campaign (Google & Meta)
+                        Publish Campaign Now
                     </button>
                 </div>
             </div>
@@ -184,26 +192,30 @@
                     <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
                 </svg>
                 <h2 class="text-2xl font-bold text-gray-800">Campaign Launched!</h2>
-                <p class="text-gray-600">Your Weather-Smart campaign is now live and on auto-pilot. Ads will automatically start/stop based on the weather forecast in **500081**.</p>
+                <p class="text-gray-600">Your <span id="published-playbook"></span> campaign for **<span id="published-persona"></span>** is live across Google & Meta.</p>
                 
-                <h3 class="text-xl font-semibold text-gray-700 pt-4">Tracking Dashboard (Mock)</h3>
+                <h3 class="text-xl font-semibold text-gray-700 pt-4">Mini Dashboard (Real-Time Mock)</h3>
                 <div class="grid grid-cols-3 gap-3">
                     <div class="p-3 bg-blue-100 rounded-lg">
-                        <p class="text-xs text-gray-600">Spend Today</p>
-                        <p class="text-lg font-bold text-blue-700">₹720</p>
+                        <p class="text-xs text-gray-600">Spend</p>
+                        <p class="text-lg font-bold text-blue-700">₹950</p>
                     </div>
                     <div class="p-3 bg-purple-100 rounded-lg">
-                        <p class="text-xs text-gray-600">Leads (Call/DM)</p>
-                        <p class="text-lg font-bold text-purple-700">14</p>
+                        <p class="text-xs text-gray-600">Actions (Calls/DMs/QR)</p>
+                        <p class="text-lg font-bold text-purple-700">18</p>
                     </div>
                     <div class="p-3 bg-green-100 rounded-lg">
                         <p class="text-xs text-gray-600">Avg. CPA</p>
-                        <p class="text-lg font-bold text-green-700">₹51.4</p>
+                        <p class="text-lg font-bold text-green-700">₹52.7</p>
                     </div>
                 </div>
                 <div class="p-3 bg-yellow-100 rounded-lg text-sm text-yellow-800 mt-4 font-medium">
-                    Next Trigger Window: Heavy Rain ☔ (4:00 PM - 7:00 PM)
+                    "What Worked" Card: Top Action Hour was **6-7 PM** (Rainy-day Delivery).
                 </div>
+                
+                <button onclick="window.location.reload()" class="mt-4 text-sm text-blue-600 font-semibold hover:underline">
+                    Start a New Campaign
+                </button>
             </div>
 
         </div>
@@ -213,194 +225,92 @@
         // Global App State
         let campaignConfig = {
             step: 1,
-            goal: null,
-            pincode: '500081',
-            weatherData: null,
-            selectedTemplateId: null,
-            adCopy: 'Rain incoming ☔ Flash 20% on raincoats today.',
+            personaId: null,
+            persona: null,
+            selectedPlaybookId: null,
+            goal: 'walkins',
+            adCopy: '',
             cta: 'Visit Store',
             budget: 5000,
-            activeTriggers: []
         };
         
-        // --- FIREBASE MOCK SETUP (Required Variables & Initialization) ---
-        // NOTE: Firestore is not used as this is a UI prototype demonstrating the product flow,
-        // but the required global variables are initialized for environment compliance.
+        // --- FIREBASE MOCK SETUP (Environment Compliance) ---
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
         const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : {};
 
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-        // import { getFirestore } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-        import { setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        // NOTE: setLogLevel is not exported from firebase-auth.js, removing to fix SyntaxError.
         
-        let app, auth, db;
+        let app, auth;
         
         try {
             if (Object.keys(firebaseConfig).length > 0) {
                 app = initializeApp(firebaseConfig);
                 auth = getAuth(app);
-                // db = getFirestore(app);
-                setLogLevel('Debug');
+                // setLogLevel('Debug'); // Removing problematic call
             
-                if (typeof __initial_auth_token !== 'undefined') {
-                    signInWithCustomToken(auth, __initial_auth_token).catch(e => console.error("Firebase Custom Auth Error:", e));
-                } else {
-                    signInAnonymously(auth).catch(e => console.error("Firebase Anonymous Auth Error:", e));
-                }
+                const signInPromise = typeof __initial_auth_token !== 'undefined' 
+                    ? signInWithCustomToken(auth, __initial_auth_token)
+                    : signInAnonymously(auth);
+                    
+                signInPromise.catch(e => console.error("Firebase Auth Error:", e));
             } else {
-                console.warn("Firebase config is missing. Running in mock-only mode.");
+                console.warn("Firebase config missing. Running in mock-only mode.");
             }
         } catch (error) {
             console.error("Firebase initialization failed:", error);
         }
         
-        // --- MOCK API DATA ---
-        
-        // Mock Weather Data for Pincode 500081 (Hyderabad area)
-        const MOCK_WEATHER = {
-            pincode: '500081',
-            current: {
-                temp: 32,
-                condition: 'Sunny',
-                humidity: 55,
-                precip_prob: 10,
-                aqi: 75,
-                uv_index: 9, // Very High
-                wind_speed: 15,
-                alert: null
+        // --- MOCK PERSONA & PLAYBOOK DATA ---
+
+        const PERSONAS = {
+            'sports': {
+                name: 'The Runner’s Edge',
+                type: 'Sports Apparel',
+                locality: 'Jubilee Hills',
+                phone: '+91 98765 43210',
+                cpa_base: 50, // Low-value, high-volume actions
+                sim_text: 'Higher volume, lower value actions (e.g., footfall, quick calls).',
+                icon: '👟'
             },
-            hourly_forecast: [
-                // Next 6 hours: High Heat/UV
-                { time: '1 PM', temp: 35, condition: 'Clear', precip_prob: 5, uv_index: 9, heat_index: 'High' },
-                { time: '2 PM', temp: 37, condition: 'Clear', precip_prob: 5, uv_index: 10, heat_index: 'Extreme' },
-                { time: '3 PM', temp: 35, condition: 'Clear', precip_prob: 10, uv_index: 8, heat_index: 'High' },
-                // Later: Rain incoming
-                { time: '4 PM', temp: 32, condition: 'Cloudy', precip_prob: 50, uv_index: 5, heat_index: 'Medium' },
-                { time: '5 PM', temp: 28, condition: 'Heavy Rain', precip_prob: 80, uv_index: 2, heat_index: 'Low' },
-                { time: '6 PM', temp: 27, condition: 'Heavy Rain', precip_prob: 90, uv_index: 1, heat_index: 'Low' },
-                { time: '7 PM', temp: 26, condition: 'Light Rain', precip_prob: 70, uv_index: 0, heat_index: 'Low' },
-            ]
+            'jewelry': {
+                name: 'Heritage Jewels',
+                type: 'Jewelry Retail',
+                locality: 'Gachibowli',
+                phone: '+91 99887 76655',
+                cpa_base: 150, // High-value, low-volume actions
+                sim_text: 'Lower volume, high-value actions (e.g., event RSVPs, detailed WhatsApp chats).',
+                icon: '💎'
+            }
         };
 
-        // Mock Templates (based on Outcome-first campaign types)
-        const TEMPLATES = [
-            { 
-                id: 'heat-hack', 
-                name: 'Beat the Heat Flash Sale', 
-                icon: '☀️', 
-                description: 'Ideal for beverages, AC services, and outdoor gear in high temperatures.',
-                trigger: 'Temp $\ge$ 35°C OR Heat Index $\ge$ "High" in next 6h',
-                category: 'café, electronics',
-                relevanceScore: 0 // calculated later
+        const PLAYBOOKS = [
+            { id: 'event-booster', name: 'Event Booster', icon: '🎫', 
+              description: 'Promote an exclusive event or new collection launch with RSVP tracking.',
+              copy_en: 'New Collection Preview: RSVP now for 10% off. {locality} store.',
+              copy_hi: 'Naya Collection. RSVP karke 10% discount paayein. {locality} store.',
+              keywords: ['event', 'luxury', 'festival', 'rsvp'], score_mod: 1.5, min_budget: 4000
             },
-            { 
-                id: 'rain-ready', 
-                name: 'Rainy Day Delivery Promo', 
-                icon: '☔', 
-                description: 'Shift foot traffic to delivery/online during heavy rainfall windows.',
-                trigger: 'Rain probability $\ge$ 60% in next 6h',
-                category: 'grocery, pharmacy, quick-commerce',
-                relevanceScore: 0
+            { id: 'festival-sale', name: 'Festival Sale', icon: '🪔', 
+              description: 'Drive urgency during peak season (Diwali, Wedding, etc.).',
+              copy_en: 'Diwali offer: Get up to {discount}% off everything. Today only!',
+              copy_hi: 'Diwali Dhamaka: Sab cheezon par {discount}% tak off. Aaj hi!',
+              keywords: ['festival', 'clearance', 'luxury'], score_mod: 1.3, min_budget: 3000
             },
-            { 
-                id: 'uv-guard', 
-                name: 'UV Safety / Sunscreen Special', 
-                icon: '🧴', 
-                description: 'Push sun-care, sunglasses, and protective gear when the UV Index spikes.',
-                trigger: 'UV Index $\ge$ 8 (Very High)',
-                category: 'pharmacy, apparel',
-                relevanceScore: 0
+            { id: 'rainy-delivery', name: 'Rainy-day Delivery (Smart)', icon: '☔', 
+              description: 'Auto-schedules ads to push delivery/calls when rain is forecast.',
+              copy_en: 'Rain outside? We deliver! Free shipping on all orders over ₹999.',
+              copy_hi: 'Baarish aa rahi hai. Ghar baithe order karein. Free delivery!',
+              keywords: ['weather', 'footins', 'whatsapp'], score_mod: 1.2, min_budget: 2000
+            },
+            { id: 'clearance', name: 'Clearance Sale', icon: '💥', 
+              description: 'Move older stock quickly with aggressive discounting for footfall.',
+              copy_en: 'FINAL SALE: {discount}% off all last season stock. Visit now!',
+              copy_hi: 'Aakhri sale! Pichle season ke stock par bhaari chhoot. Turant aayein!',
+              keywords: ['clearance', 'footins', 'sports'], score_mod: 1.1, min_budget: 2000
             },
         ];
-
-        // --- MOCK API FUNCTIONS ---
-        
-        /**
-         * Simulates a call to a Weather API (48h forecast + current conditions).
-         * @param {string} pincode 
-         * @returns {Promise<object>}
-         */
-        function getMockWeather(pincode) {
-            return new Promise(resolve => {
-                setTimeout(() => {
-                    resolve(MOCK_WEATHER);
-                }, 500); // Simulate network latency
-            });
-        }
-        
-        /**
-         * Checks the 48-hour forecast against all defined template triggers
-         * and assigns a relevance score based on how many hours match the condition.
-         * @param {object} weatherData 
-         */
-        function evaluateTemplateRelevance(weatherData) {
-            TEMPLATES.forEach(template => {
-                let score = 0;
-                let foundMatch = false;
-
-                // Check Heat/Temp Trigger
-                if (template.id === 'heat-hack') {
-                    weatherData.hourly_forecast.forEach(hour => {
-                        if (hour.temp >= 35 || hour.heat_index === 'High' || hour.heat_index === 'Extreme') {
-                            score += 10;
-                            foundMatch = true;
-                        }
-                    });
-                }
-                
-                // Check Rain Trigger
-                if (template.id === 'rain-ready') {
-                    weatherData.hourly_forecast.forEach(hour => {
-                        if (hour.precip_prob >= 60) {
-                            score += 10;
-                            foundMatch = true;
-                        }
-                    });
-                }
-
-                // Check UV Trigger
-                if (template.id === 'uv-guard') {
-                    weatherData.hourly_forecast.forEach(hour => {
-                        if (hour.uv_index >= 8) {
-                            score += 10;
-                            foundMatch = true;
-                        }
-                    });
-                }
-                
-                // If a template's condition is met in the forecast, boost the score.
-                template.relevanceScore = foundMatch ? score + 100 : score;
-            });
-
-            TEMPLATES.sort((a, b) => b.relevanceScore - a.relevanceScore);
-        }
-
-        /**
-         * Generates mock outcome based on budget and weather match.
-         * The more hours match the trigger, the higher the efficiency (Uplift).
-         * @param {number} budget 
-         * @param {string} selectedTemplateId
-         * @returns {{walkins: number, uplift: number}}
-         */
-        function simulateOutcome(budget, selectedTemplateId) {
-            const template = TEMPLATES.find(t => t.id === selectedTemplateId);
-            const baseCPA = 80; // Mock base Cost Per Action (CPA)
-            
-            // Uplift is calculated based on relevance score (which counts matching hours)
-            let uplift = Math.min(Math.floor(template.relevanceScore / 20), 30); // Max 30% uplift
-            if (uplift < 10) uplift = 10; // Minimum 10% uplift just for being "weather-smart"
-            
-            const effectiveCPA = baseCPA * (1 - (uplift / 100)); // Lower CPA due to better targeting
-            
-            const predictedWalkins = Math.floor(budget / effectiveCPA);
-
-            return {
-                walkins: predictedWalkins,
-                uplift: uplift
-            };
-        }
-
 
         // --- UI & NAVIGATION LOGIC ---
 
@@ -408,7 +318,7 @@
             for (let i = 1; i <= 5; i++) {
                 const indicator = document.getElementById(`step-${i}-indicator`);
                 if (indicator) {
-                    indicator.classList.remove('text-blue-600', 'text-gray-400');
+                    indicator.classList.remove('text-blue-600', 'text-gray-400', 'font-bold', 'text-green-500');
                     if (i === currentStep) {
                         indicator.classList.add('text-blue-600', 'font-bold');
                     } else if (i < currentStep) {
@@ -427,46 +337,28 @@
                 stepElement.style.display = 'block';
                 campaignConfig.step = step;
                 updateStepIndicator(step);
+                
                 // Call step-specific render functions
                 if (step === 2) renderStep2();
                 if (step === 3) renderStep3();
                 if (step === 4) renderStep4();
+                if (step === 5) renderStep5();
             }
         }
 
         function nextStep() {
             if (campaignConfig.step === 1) {
-                campaignConfig.pincode = document.getElementById('pincode').value;
-                document.getElementById('step-1-next').disabled = true;
-                
-                // Show loading state and fetch mock weather
-                document.getElementById('step-1-next').textContent = 'Fetching Weather...';
-                
-                getMockWeather(campaignConfig.pincode).then(weatherData => {
-                    campaignConfig.weatherData = weatherData;
-                    evaluateTemplateRelevance(weatherData); // Rank templates
-                    document.getElementById('step-1-next').textContent = 'Next: Check Weather Signals';
-                    showStep(2);
-                }).catch(e => {
-                    console.error("Weather Mock failed", e);
-                    alert("Could not fetch weather data. Please try a different pincode.");
-                    document.getElementById('step-1-next').disabled = false;
-                });
+                if (!campaignConfig.personaId) return;
+                showStep(2);
             } else if (campaignConfig.step === 2) {
-                // Ensure a template is selected before proceeding
-                if (!campaignConfig.selectedTemplateId) {
-                    alert('Please select a weather-smart template to continue.');
-                    return;
-                }
+                if (!campaignConfig.selectedPlaybookId) return;
+                campaignConfig.goal = document.getElementById('goal-select').value;
                 showStep(3);
             } else if (campaignConfig.step === 3) {
-                // Update config with creative changes
                 campaignConfig.adCopy = document.getElementById('ad-copy').value;
                 campaignConfig.cta = document.getElementById('call-to-action').value;
                 showStep(4);
-            } else if (campaignConfig.step === 4) {
-                // This step calls publishCampaign() instead of nextStep()
-            }
+            } 
         }
 
         function prevStep() {
@@ -474,192 +366,221 @@
                 showStep(campaignConfig.step - 1);
             }
         }
-
-        function publishCampaign() {
-            // In a real app, this would call the Ad Connectors API
-            console.log('Campaign Config:', campaignConfig);
-            showStep(5);
-        }
-
-        // --- STEP 1 RENDER/INIT ---
+        
+        // --- STEP 1 LOGIC ---
 
         function initStep1() {
-            document.querySelectorAll('.goal-btn').forEach(btn => {
+            document.querySelectorAll('.persona-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    document.querySelectorAll('.goal-btn').forEach(b => {
-                        b.classList.remove('ring-4', 'ring-blue-200', 'bg-blue-50');
-                        b.classList.add('bg-white', 'border-gray-200');
-                    });
-                    this.classList.add('ring-4', 'ring-blue-200', 'bg-blue-50');
-                    this.classList.remove('bg-white', 'border-gray-200');
-                    campaignConfig.goal = this.getAttribute('data-goal');
-                    document.getElementById('step-1-next').disabled = false;
+                    const id = this.getAttribute('data-persona');
+                    selectPersona(id);
                 });
             });
-
-            document.getElementById('pincode').addEventListener('input', function() {
-                 document.getElementById('step-1-next').disabled = !campaignConfig.goal || this.value.length < 5;
-            });
-
-             // Pre-select for the demo
-             document.querySelector('.goal-btn[data-goal="delivery"]').click();
+            // Pre-select for the demo
+             selectPersona('sports');
         }
 
-        // --- STEP 2 RENDER ---
+        function selectPersona(id) {
+            campaignConfig.personaId = id;
+            campaignConfig.persona = PERSONAS[id];
+            
+            // Highlight button
+            document.querySelectorAll('.persona-btn').forEach(b => {
+                b.classList.remove('ring-4', 'ring-blue-200', 'bg-blue-50');
+            });
+            document.querySelector(`.persona-btn[data-persona="${id}"]`).classList.add('ring-4', 'ring-blue-200', 'bg-blue-50');
+
+            // Update summary
+            document.getElementById('persona-details').innerHTML = `
+                <p>Name: ${campaignConfig.persona.name}</p>
+                <p>Location: ${campaignConfig.persona.locality}</p>
+            `;
+            document.getElementById('persona-summary').classList.remove('hidden');
+            document.getElementById('step-1-next').disabled = false;
+        }
+
+        // --- STEP 2 LOGIC ---
+
+        function calculatePlaybookScore(playbook, personaId) {
+            let score = 100;
+            const persona = PERSONAS[personaId];
+            
+            // Adjust score based on persona type affinity
+            if (personaId === 'jewelry') {
+                if (playbook.keywords.includes('luxury') || playbook.keywords.includes('festival')) score *= 1.5;
+                if (playbook.keywords.includes('footins') || playbook.keywords.includes('clearance')) score *= 0.8;
+            } else if (personaId === 'sports') {
+                if (playbook.keywords.includes('sports') || playbook.keywords.includes('clearance')) score *= 1.5;
+                if (playbook.keywords.includes('luxury') || playbook.keywords.includes('festival')) score *= 0.8;
+            }
+
+            // Adjust score based on Goal affinity (using the default 'walkins' for initial render)
+            const goal = document.getElementById('goal-select').value;
+            if (goal === 'event' && playbook.keywords.includes('rsvp')) score *= 2;
+            if (goal === 'whatsapp' && playbook.keywords.includes('whatsapp')) score *= 1.5;
+            if (goal === 'walkins' && playbook.keywords.includes('footins')) score *= 1.5;
+
+            return Math.floor(score * playbook.score_mod);
+        }
 
         function renderStep2() {
-            const weather = campaignConfig.weatherData.current;
-            const weatherHtml = `
-                <p class="font-bold text-lg flex items-center">
-                    ${weather.condition} 
-                    <span class="text-3xl ml-2">${weather.temp}°C</span>
-                    <span class="text-sm ml-1 text-gray-500">(${campaignConfig.pincode})</span>
-                </p>
-                <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-gray-600 mt-1">
-                    <span>💧 Humidity: ${weather.humidity}%</span>
-                    <span>☔ Rain Prob (24h): ${Math.max(...campaignConfig.weatherData.hourly_forecast.map(h => h.precip_prob))}%</span>
-                    <span>☀️ UV Index: ${weather.uv_index}</span>
-                    <span>💨 AQI: ${weather.aqi}</span>
-                </div>
-                ${weather.alert ? `<p class="mt-2 text-red-600 font-semibold">🚨 IMD Alert: ${weather.alert}</p>` : ''}
-            `;
-            document.getElementById('current-weather').innerHTML = weatherHtml;
+            document.getElementById('persona-name-step2').textContent = campaignConfig.persona.name;
+            
+            // Re-calculate scores and sort
+            const rankedPlaybooks = PLAYBOOKS.map(pb => ({
+                ...pb,
+                score: calculatePlaybookScore(pb, campaignConfig.personaId)
+            })).sort((a, b) => b.score - a.score);
 
-            const templateList = document.getElementById('template-list');
-            templateList.innerHTML = TEMPLATES.map(t => {
-                const isHighlyRelevant = t.relevanceScore > 100;
+            const playbookList = document.getElementById('playbook-list');
+            playbookList.innerHTML = rankedPlaybooks.map(pb => {
+                const isSelected = pb.id === campaignConfig.selectedPlaybookId;
+                const isRecommended = pb === rankedPlaybooks[0];
                 return `
-                    <button data-id="${t.id}" class="template-btn w-full p-4 bg-white border ${t.id === campaignConfig.selectedTemplateId ? 'border-blue-500 ring-2 ring-blue-200 bg-blue-50' : 'border-gray-200'} rounded-lg text-left hover:bg-blue-50 transition duration-150 relative">
-                        ${isHighlyRelevant ? '<span class="absolute top-0 right-0 mt-[-10px] mr-[-10px] bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">HIGH ALERT!</span>' : ''}
-                        <p class="font-bold text-xl">${t.icon} ${t.name}</p>
-                        <p class="text-sm text-gray-600 mt-1">${t.description}</p>
-                        <p class="text-xs text-gray-400 mt-2">Trigger: ${t.trigger}</p>
+                    <button data-id="${pb.id}" data-min-budget="${pb.min_budget}" class="playbook-btn w-full p-4 bg-white border ${isSelected ? 'border-indigo-500 ring-2 ring-indigo-200 bg-indigo-50' : 'border-gray-200'} rounded-lg text-left hover:bg-indigo-50 transition duration-150 relative">
+                        ${isRecommended ? '<span class="absolute top-0 right-0 mt-[-10px] mr-[-10px] bg-yellow-500 text-white text-xs font-bold px-2 py-1 rounded-full shadow-lg">TOP PICK</span>' : ''}
+                        <p class="font-bold text-xl">${pb.icon} ${pb.name}</p>
+                        <p class="text-sm text-gray-600 mt-1">${pb.description}</p>
+                        <p class="text-xs text-gray-400 mt-2">Recommended Min. Budget: ₹${pb.min_budget.toLocaleString('en-IN')}</p>
                     </button>
                 `;
             }).join('');
 
-            document.querySelectorAll('.template-btn').forEach(btn => {
+            document.querySelectorAll('.playbook-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
-                    document.querySelectorAll('.template-btn').forEach(b => {
-                        b.classList.remove('border-blue-500', 'ring-2', 'ring-blue-200', 'bg-blue-50');
+                    document.querySelectorAll('.playbook-btn').forEach(b => {
+                        b.classList.remove('border-indigo-500', 'ring-2', 'ring-indigo-200', 'bg-indigo-50');
                     });
-                    this.classList.add('border-blue-500', 'ring-2', 'ring-blue-200', 'bg-blue-50');
-                    campaignConfig.selectedTemplateId = this.getAttribute('data-id');
+                    this.classList.add('border-indigo-500', 'ring-2', 'ring-indigo-200', 'bg-indigo-50');
+                    campaignConfig.selectedPlaybookId = this.getAttribute('data-id');
                     document.getElementById('step-2-next').disabled = false;
+                    
+                    // Set min budget for slider later
+                    const minBudget = parseInt(this.getAttribute('data-min-budget'));
+                    campaignConfig.budget = Math.max(campaignConfig.budget, minBudget);
                 });
             });
+            
+            // Re-render and auto-select based on the new goal selection
+            document.getElementById('goal-select').addEventListener('change', renderStep2);
 
-            // Auto-select the top-ranked template for smooth demo
-            if (TEMPLATES.length > 0) {
-                 document.querySelector(`.template-btn[data-id="${TEMPLATES[0].id}"]`).click();
+            // Auto-select the top-ranked playbook
+            if (rankedPlaybooks.length > 0) {
+                 document.querySelector(`.playbook-btn[data-id="${rankedPlaybooks[0].id}"]`).click();
             }
         }
+        
+        // --- STEP 3 LOGIC ---
+        
+        function generateCopy(language, playbook, persona) {
+            let copy = playbook[`copy_${language}`] || playbook.copy_en;
+            
+            // Dynamic Tokens
+            copy = copy.replace('{locality}', persona.locality);
+            
+            // Persona-specific tokens (mocked values)
+            let discount = '20';
+            let product = 'Diamond Necklace';
 
-        // --- STEP 3 RENDER ---
+            if (persona.type === 'Sports Apparel') {
+                discount = '30';
+                product = 'Running Shoes';
+            }
+            
+            copy = copy.replace('{discount}', discount);
+            copy = copy.replace('{product}', product);
+            
+            return copy;
+        }
 
         function renderStep3() {
-            const template = TEMPLATES.find(t => t.id === campaignConfig.selectedTemplateId);
-            const weather = campaignConfig.weatherData.current;
+            const playbook = PLAYBOOKS.find(p => p.id === campaignConfig.selectedPlaybookId);
+            const persona = campaignConfig.persona;
             
-            // Populate info box
-            document.getElementById('selected-template-info').innerHTML = `
-                <p class="font-bold">${template.icon} ${template.name} Selected.</p>
-                <p>Rule: ${template.trigger}.</p>
-                <p>Next predicted trigger time: ${weather.condition === 'Heavy Rain' ? '4 PM - 7 PM' : '1 PM - 3 PM'}.</p>
+            document.getElementById('creative-info').innerHTML = `
+                <p class="font-bold">Active Playbook: ${playbook.icon} ${playbook.name}</p>
+                <p>Targets: ${persona.locality} radius, Auto-picks interests: ${playbook.keywords.join(', ')}</p>
             `;
 
-            // Initial copy generation
-            let initialCopy = campaignConfig.adCopy;
-            if (template.id === 'heat-hack') {
-                initialCopy = `Gachibowli is 🔥 {temp}°C - Chill with Iced Latte @ ₹99 till 6 pm.`;
-                document.getElementById('preview-url').textContent = 'cafedemo.in/iced-latte';
-            } else if (template.id === 'rain-ready') {
-                 initialCopy = `Rains incoming ☔ Flash 20% on raincoats today.`;
-                 document.getElementById('preview-url').textContent = 'fashionstore.com/raincoats';
-            } else if (template.id === 'uv-guard') {
-                 initialCopy = `UV Index {uv_index} in ${campaignConfig.pincode}. SPF 50 at 15% off today.`;
-                 document.getElementById('preview-url').textContent = 'pharmacy.in/spf-deal';
-            }
-
-            document.getElementById('ad-copy').value = initialCopy;
-            document.getElementById('call-to-action').value = campaignConfig.cta;
-
-            // Live preview function
-            const updatePreview = () => {
-                let copy = document.getElementById('ad-copy').value;
+            // Initial Copy Generation & Render
+            const updateCreative = () => {
+                const lang = document.getElementById('language-toggle').value;
+                const copyText = generateCopy(lang, playbook, persona);
                 
-                // Replace dynamic tokens
-                copy = copy.replace('{temp}', weather.temp);
-                copy = copy.replace('{condition}', weather.condition);
-                copy = copy.replace('{uv_index}', weather.uv_index);
+                document.getElementById('ad-copy').value = copyText;
+                campaignConfig.adCopy = copyText;
 
-                // Simple split for headline/description
-                const parts = copy.split('-');
+                // Simple Preview Update
+                const parts = copyText.split(':');
                 document.getElementById('preview-headline').textContent = parts[0].trim().substring(0, 40) || 'Creative Headline';
-                document.getElementById('preview-description').textContent = (parts.length > 1 ? parts[1].trim() : copy.trim()).substring(0, 80) || 'Creative Description';
+                document.getElementById('preview-description').textContent = (parts.length > 1 ? parts[1].trim() : copyText.trim()).substring(0, 80) || 'Creative Description';
+                
+                document.getElementById('call-to-action').value = campaignConfig.goal === 'event' ? 'RSVP Now' : 'Visit Store';
             };
 
-            document.getElementById('ad-copy').addEventListener('input', updatePreview);
-            document.getElementById('call-to-action').addEventListener('change', updatePreview);
+            document.getElementById('language-toggle').addEventListener('change', updateCreative);
+            document.getElementById('ad-copy').addEventListener('input', updateCreative);
             
-            updatePreview(); // Initial render
+            updateCreative(); // Initial render
         }
 
+        // --- STEP 4 LOGIC ---
+        
+        function simulateOutcome(budget, persona) {
+            const actions = Math.floor(budget / persona.cpa_base);
+            const predictedCPA = Math.floor(budget / actions);
+            
+            // Add a simulated confidence band based on budget size
+            let uplift = 0;
+            if (budget > 10000) uplift = 15;
+            else if (budget > 5000) uplift = 10;
+            
+            const finalActions = Math.floor(actions * (1 + (uplift / 100)));
 
-        // --- STEP 4 RENDER ---
+            return {
+                actions: finalActions,
+                cpa: predictedCPA,
+                sim_text: persona.sim_text,
+                cpa_stop_limit: persona.cpa_base * 2, // Guardrail rule
+            };
+        }
 
         function renderStep4() {
-            const weather = campaignConfig.weatherData.current;
-            const template = TEMPLATES.find(t => t.id === campaignConfig.selectedTemplateId);
-            
-            // Forecast summary
-            const heavyRainHours = campaignConfig.weatherData.hourly_forecast.filter(h => h.precip_prob >= 60);
-            const heatHours = campaignConfig.weatherData.hourly_forecast.filter(h => h.temp >= 35);
-            
-            let forecastText = `Current: ${weather.condition}, ${weather.temp}°C.`;
-            if (heavyRainHours.length > 0) {
-                forecastText += ` Heavy rain likely for ${heavyRainHours.length} hours today.`;
-            } else if (heatHours.length > 0) {
-                 forecastText += ` High heat (>${35}°C) expected for ${heatHours.length} hours today.`;
-            }
-            document.getElementById('forecast-summary').textContent = forecastText;
-            
-            // Trigger List
-            const triggers = [
-                { id: 'rain', label: 'If Rain probability $\ge$ 60% in next 6h', enabled: template.id === 'rain-ready' },
-                { id: 'temp', label: 'If Temp $\ge$ 35°C OR Heat Index $\ge$ "High"', enabled: template.id === 'heat-hack' },
-                { id: 'uv', label: 'If UV Index $\ge$ 8 (Very High)', enabled: template.id === 'uv-guard' },
-                { id: 'aqi', label: 'If AQI $\ge$ 200 (Nice-to-have V2, disabled)', enabled: false, disabled: true }
-            ];
-
-            const triggerListHtml = triggers.map(t => `
-                <div class="flex items-center justify-between p-3 bg-white rounded-lg border border-gray-200">
-                    <label class="text-sm font-medium text-gray-700">${t.label}</label>
-                    <input type="checkbox" data-trigger-id="${t.id}" 
-                           class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500 ${t.disabled ? 'opacity-50' : ''}" 
-                           ${t.enabled ? 'checked' : ''} ${t.disabled ? 'disabled' : ''}>
-                </div>
-            `).join('');
-            document.getElementById('trigger-list').innerHTML = triggerListHtml;
-            
-            // Budget Slider & Simulator Logic
+            const persona = campaignConfig.persona;
             const budgetSlider = document.getElementById('budget-slider');
             const budgetValue = document.getElementById('budget-value');
             
+            document.getElementById('business-name-sim').textContent = persona.name;
+            document.getElementById('cpa-limit').textContent = persona.cpa_base * 2;
+
             const updateSimulator = () => {
                 const budget = parseInt(budgetSlider.value);
                 campaignConfig.budget = budget;
                 budgetValue.textContent = '₹' + budget.toLocaleString('en-IN');
                 
-                const outcome = simulateOutcome(budget, campaignConfig.selectedTemplateId);
+                const outcome = simulateOutcome(budget, persona);
                 
-                document.getElementById('predicted-walkins').textContent = `~${outcome.walkins.toLocaleString()}`;
-                document.getElementById('weather-uplift').textContent = `+${outcome.uplift}% Weather Uplift`;
+                document.getElementById('predicted-actions').textContent = `~${outcome.actions.toLocaleString()}`;
+                document.getElementById('predicted-cpa').textContent = outcome.cpa;
+                document.getElementById('sim-info').textContent = outcome.sim_text;
             };
             
             budgetSlider.addEventListener('input', updateSimulator);
             
+            // Ensure slider starts at current budget or min if needed
+            const currentPlaybook = PLAYBOOKS.find(p => p.id === campaignConfig.selectedPlaybookId);
+            budgetSlider.min = currentPlaybook.min_budget;
+            budgetSlider.value = Math.max(budgetSlider.value, currentPlaybook.min_budget);
+
             updateSimulator(); // Initial simulator render
+        }
+
+        // --- STEP 5 LOGIC (Dashboard) ---
+        
+        function renderStep5() {
+            const playbook = PLAYBOOKS.find(p => p.id === campaignConfig.selectedPlaybookId);
+            document.getElementById('published-persona').textContent = campaignConfig.persona.name;
+            document.getElementById('published-playbook').textContent = playbook.name;
         }
 
         // --- APP INITIALIZATION ---
@@ -668,6 +589,20 @@
             initStep1();
             showStep(1);
         };
+
+        function publishCampaign() {
+             // Mock publish confirmation
+             const isCpaStopOn = document.getElementById('cpa-stop').checked;
+             const isExpiryOn = document.getElementById('auto-expiry').checked;
+
+             const message = `
+                 Publishing "${campaignConfig.persona.name}: ${PLAYBOOKS.find(p => p.id === campaignConfig.selectedPlaybookId).name}"
+                 Budget: ₹${campaignConfig.budget.toLocaleString()}
+                 Guardrails: CPA Stop (${isCpaStopOn ? 'ON' : 'OFF'}), Auto-Expiry (${isExpiryOn ? 'ON' : 'OFF'})
+             `;
+             console.log(message);
+             showStep(5);
+        }
     </script>
 </body>
 </html>
